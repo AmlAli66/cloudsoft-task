@@ -1,0 +1,774 @@
+<!-- Loader -->
+<div *ngIf="loading" class="page-loader">
+    <i class="pi pi-spin pi-spinner"></i>
+</div>
+<div class="Seafarers-page-content p-3">
+    <!-- Caption section -->
+    <div class="caption-section mb-3">
+        <!-- Title -->
+        <h3 class="m-0 fw-bold caption-title">Seafarers Roster</h3>
+
+        <!-- Actions (buttons + multiSelect) -->
+        <div class="caption-actions d-flex align-items-center gap-2 flex-wrap">
+            <!-- Add Seafarer button -->
+            <button type="button" class="btn btn-primary d-flex align-items-center gap-2" (click)="openSeafarerModal()">
+                <i class="pi pi-plus"></i>
+                Add Seafarer
+            </button>
+
+            <!-- Filter toggle button -->
+            <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
+                (click)="toggleFilters()">
+                <i class="pi pi-filter"></i>
+                Filter
+            </button>
+
+            <!-- Displayed columns -->
+            <p-multiSelect [options]="allColumnsWithoutActions" [(ngModel)]="selectedColumns" optionLabel="header"
+                placeholder="Display Columns" selectedItemsLabel="{0} columns selected" display="chip">
+            </p-multiSelect>
+        </div>
+    </div>
+
+    <!-- Filter inputs -->
+    <div *ngIf="showFilters" class="d-flex justify-content-start align-items-center gap-3 mb-3 ">
+        <input [(ngModel)]="filterNameRank" (input)="applyFilters()" placeholder="Filter by Name or Rank..."
+            class="form-control" />
+        <input [(ngModel)]="filterNationality" (input)="applyFilters()" placeholder="Filter by Nationality..."
+            class="form-control" />
+    </div>
+
+    <!-- Modern styled table -->
+    <div class="modern-table-container">
+        <p-table #dt [value]="seafarers" [paginator]="true" [rows]="15" [loading]="false" [customSort]="true"
+            (sortFunction)="customSort($event)" responsiveLayout="scroll">
+
+            <!-- Table header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of orderedSelectedColumns" [pSortableColumn]="col.field">
+                        {{ col.header }}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Table body -->
+            <ng-template pTemplate="body" let-seafarer>
+                <tr>
+                    <td *ngFor="let col of orderedSelectedColumns">
+
+                        <!-- Actions column -->
+                        <ng-container *ngIf="col.field === 'actions'; else normalCell">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <!-- <span class="status-pill" [ngClass]="seafarer.Status === 1 ? 'active' : 'inactive'">
+                                    {{ seafarer.Status === 1 ? 'Active' : 'Inactive' }}
+                                </span> -->
+
+                                <!-- <button class="btn btn-sm btn-warning d-flex align-items-center"
+                                    (click)="toggleSeafarerStatus(seafarer)" title="Toggle Status">
+                                    <i class="pi" [ngClass]="seafarer.Status === 1 ? 'pi-times' : 'pi-check'"></i>
+                                </button> -->
+                                <!-- زرار Active / Inactive -->
+                                <button type="button" class="btn btn-sm status-pill"
+                                    [ngClass]="seafarer.Status === 1 ? 'btn-success' : 'btn-secondary'"
+                                    (click)="toggleSeafarerStatus(seafarer)"
+                                    [title]="seafarer.Status === 1 ? 'Active' : 'Inactive'">
+                                    <i class="bi"
+                                        [ngClass]="seafarer.Status === 1 ? 'bi-person-check-fill' : 'bi-person-x-fill'">
+                                    </i>
+                                </button>
+
+                                <button class="btn btn-sm d-flex align-items-center" title="Edit"
+                                    (click)="onEditSeafarer(seafarer)">
+                                    <i class="pi pi-pencil"></i>
+                                </button>
+                            </div>
+                        </ng-container>
+
+                        <!-- Normal cells -->
+                        <ng-template #normalCell>
+                            <ng-container
+                                *ngIf="['BirthDate','PassPortIssueDate','PassportExpireDate','VisaIssueDate','VisaExpiryDate','EmploymentDate','InsuranceDate'].includes(col.field); else defaultText">
+                                {{ seafarer[col.field] ? (seafarer[col.field] | date:'yyyy-MM-dd') : '—' }}
+                            </ng-container>
+
+                            <ng-template #defaultText>
+                                <!-- EmpId -->
+                                <span *ngIf="col.field === 'EmpId'" class="emp-id">{{ seafarer[col.field] || '—'
+                                    }}</span>
+
+                                <!-- Email -->
+                                <a *ngIf="col.field === 'Email'" href="mailto:{{seafarer[col.field]}}"
+                                    class="email-link">
+                                    {{ seafarer[col.field] || '—' }}
+                                </a>
+
+                                <!-- Default text -->
+                                <span *ngIf="col.field !== 'EmpId' && col.field !== 'Email'">{{ seafarer[col.field] ||
+                                    '—'
+                                    }}</span>
+                            </ng-template>
+                        </ng-template>
+
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+</div>
+
+
+<!-- Seafarer modal -->
+<p-dialog header="{{isEdit ? 'Edit Seafarer' : 'Add Seafarer'}}" [(visible)]="seafarerDialog" [modal]="true"
+    [style]="{width: '90vw', height:'90vh'}" [baseZIndex]="10000">
+
+    <div class="row " style="height: 100%;">
+        <!--  left sidebar -->
+        <div class="col-md-3">
+            <div class="sidebar-nav">
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='personal'"
+                    [class.btn-outline-primary]="activeTab!=='personal'" (click)="activeTab='personal'">
+                    Personal Data
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='contact'"
+                    [class.btn-outline-primary]="activeTab!=='contact'" (click)="activeTab='contact'">
+                    Contact Data
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='offshore'"
+                    [class.btn-outline-primary]="activeTab!=='offshore'" (click)="activeTab='offshore'">
+                    Offshore Data
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='qualifications'"
+                    [class.btn-outline-primary]="activeTab!=='qualifications'" (click)="activeTab='qualifications'">
+                    Educational Qualifications
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='certificates'"
+                    [class.btn-outline-primary]="activeTab!=='certificates'" (click)="activeTab='certificates'">
+                    Certificates
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='trainings'"
+                    [class.btn-outline-primary]="activeTab!=='trainings'" (click)="activeTab='trainings'">
+                    STCW/Other Training
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='languages'"
+                    [class.btn-outline-primary]="activeTab!=='languages'" (click)="activeTab='languages'">
+                    Languages Known
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='health'"
+                    [class.btn-outline-primary]="activeTab!=='health'" (click)="activeTab='health'">
+                    Health/Medical Data
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='payroll'"
+                    [class.btn-outline-primary]="activeTab!=='payroll'" (click)="activeTab='payroll'">
+                    Payroll Details
+                </button>
+
+                <button type="button" class="btn w-100 mb-2" [class.btn-primary]="activeTab==='references'"
+                    [class.btn-outline-primary]="activeTab!=='references'" (click)="activeTab='references'">
+                    References
+                </button>
+            </div>
+        </div>
+        <!-- Body -->
+        <div class="col-md-9">
+            <div class="p-3">
+                <form [formGroup]="seafarerForm" (ngSubmit)="saveSeafarer()">
+                    <!-- Personal Data -->
+                    <div *ngIf="activeTab==='personal'" class="row p-fluid">
+                        <!-- <div class="field col-6">
+                            <label>Employee</label>
+                            <p-dropdown [options]="employees" optionLabel="Text" optionValue="Value" name="EmpId"
+                                placeholder="Select Employee" required formControlName="EmpId"></p-dropdown>
+
+                            <small *ngIf="f.EmpId.touched && f.EmpId.invalid" class="p-error">Required</small>
+                        </div> -->
+
+
+                        <!-- Employee Dropdown -->
+                        <div class="field col-6 position-relative">
+                            <label>Employee</label>
+
+                            <div class="custom-dropdown form-control d-flex justify-content-between align-items-center"
+                                (click)="toggleDropdown('EmpId')">
+                                <span>
+                                    {{ selectedValues['EmpId']?.Text || 'Select Employee' }}
+                                </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+
+                            <div *ngIf="dropdownOpen['EmpId']" class="dropdown-menu show custom-menu w-100 p-2">
+                                <input type="text" [(ngModel)]="searchTerms['EmpId']"
+                                    [ngModelOptions]="{standalone: true}" class="form-control mb-2"
+                                    placeholder="Search employee..." (click)="$event.stopPropagation()">
+                                <ul class="list-unstyled mb-0">
+                                    <li *ngIf="empAndVendorLoading['EmpId']" class="dropdown-item text-muted">Loading...
+                                    </li>
+                                    <li *ngFor="let emp of employees | employeeFilter:searchTerms['EmpId']"
+                                        (click)="selectItem('EmpId', emp)" class="dropdown-item">
+                                        {{ emp.Text }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+
+                        <div class="field col-6">
+                            <label>Nationality</label>
+                            <input class="form-control" type="text" formControlName="Nationality" name="Nationality" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Date of Birth</label>
+                            <input class="form-control" type="date" formControlName="BirthDate" name="BirthDate"
+                                (change)="calculateAge($event)" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Age</label>
+                            <input type="number" formControlName="Age" readonly [disabled]="true"
+                                class="readonly-input form-control" placeholder="calculated Age" />
+                        </div>
+
+                        <div class="field col-6">
+                            <label>Place of Birth</label>
+                            <input class="form-control" formControlName="BirthPlace" name="BirthPlace" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Religion</label>
+                            <input class="form-control" formControlName="Religion" name="Religion" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Marital Status</label>
+                            <input class="form-control" formControlName="MaritalStatus" name="MaritalStatus" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Name of Spouse</label>
+                            <input class="form-control" formControlName="NameOfSpouse" name="NameOfSpouse" />
+                        </div>
+                        <div class="field col-6">
+                            <label>No. of Children</label>
+                            <input class="form-control" type="number" formControlName="NoOfChildren"
+                                name="NoOfChildren" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Body Weight (Kg)</label>
+                            <input class="form-control" type="number" formControlName="BodyWeight" name="BodyWeight" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Height (cm)</label>
+                            <input class="form-control" type="number" formControlName="Height" name="Height" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Nearest Airport</label>
+                            <input class="form-control" formControlName="NearestAirport" name="NearestAirport" />
+                        </div>
+                        <div class="field col-12">
+                            <label>Remarks</label>
+                            <input class="form-control" formControlName="Remarks" name="Remarks" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Date of Hire</label>
+                            <input class="form-control" type="date" formControlName="EmploymentDate"
+                                name="EmploymentDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Passport Number</label>
+                            <input class="form-control" formControlName="PassportNumber" name="PassportNumber" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Passport Issue Date</label>
+                            <input class="form-control" type="date" formControlName="PassPortIssueDate"
+                                name="PassPortIssueDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Passport Expiry Date</label>
+                            <input class="form-control" type="date" formControlName="PassportExpireDate"
+                                name="PassportExpireDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Rank (Job Name)</label>
+                            <input class="form-control" formControlName="Rank" name="Rank" />
+                        </div>
+                        <!-- <div class="field col-6">
+                            <label for="visaSponsor">Visa Sponsor</label>
+                            <p-dropdown [options]="vendors" optionLabel="Text" optionValue="Value"
+                                formControlName="VisaSponsorId" name="VisaSponsor" placeholder="Select a Sponsor"
+                                required>
+                            </p-dropdown>
+                            <small *ngIf="f.VisaSponsorId.touched && f.VisaSponsorId.invalid" class="p-error">Required</small>
+                        </div> -->
+                        <div class="field col-6 position-relative">
+                            <label>Visa Sponsor</label>
+
+                            <div class="custom-dropdown form-control d-flex justify-content-between align-items-center"
+                                (click)="toggleDropdown('VisaSponsorId')">
+                                <span>
+                                    {{ selectedValues['VisaSponsorId']?.Text || 'Select Sponsor' }}
+                                </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </div>
+
+                            <div *ngIf="dropdownOpen['VisaSponsorId']" class="dropdown-menu show custom-menu w-100 p-2">
+                                <input type="text" [(ngModel)]="searchTerms['VisaSponsorId']"
+                                    [ngModelOptions]="{standalone: true}" class="form-control mb-2"
+                                    placeholder="Search sponsor..." (click)="$event.stopPropagation()">
+                                <ul class="list-unstyled mb-0">
+                                    <li *ngIf="empAndVendorLoading['VisaSponsorId']" class="dropdown-item text-muted">
+                                        Loading...
+                                    </li>
+                                    <li *ngFor="let v of vendors | employeeFilter:searchTerms['VisaSponsorId']"
+                                        (click)="selectItem('VisaSponsorId', v)" class="dropdown-item">
+                                        {{ v.Text }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="field col-6">
+                            <label>Visa / UAE ID No.</label>
+                            <input class="form-control" formControlName="VisaUAEIdNO" name="VisaUAEIdNO" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Visa / UAE ID Issue Date</label>
+                            <input class="form-control" type="date" formControlName="VisaIssueDate"
+                                name="VisaIssueDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Visa / UAE ID Expiry Date</label>
+                            <input class="form-control" type="date" formControlName="VisaExpiryDate"
+                                name="VisaExpiryDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Residence Number</label>
+                            <input class="form-control" formControlName="ResidenceNumber" name="ResidenceNumber" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Health Insurance Expiry Date</label>
+                            <input class="form-control" type="date" formControlName="InsuranceDate"
+                                name="InsuranceDate" />
+                        </div>
+                    </div>
+
+
+                    <!-- Contact Data -->
+                    <div *ngIf="activeTab==='contact'" class="row p-fluid">
+                        <div class="field col-6">
+                            <label>Email</label>
+                            <input class="form-control" type="email" formControlName="Email" name="Email" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Permanent Address (Home Country)</label>
+                            <input class="form-control" formControlName="PermanentAddressHomeCountry"
+                                name="PermanentAddressHomeCountry" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Contact Number (Home Country)</label>
+                            <input class="form-control" formControlName="ContactNumberHomeCountry"
+                                name="ContactNumberHomeCountry" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Emergency Contact (UAE)</label>
+                            <input class="form-control" formControlName="ContactNameAndNumberDuringEmergenciesUAE"
+                                name="ContactNameAndNumberDuringEmergenciesUAE" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Emergency Contact (Home)</label>
+                            <input class="form-control" formControlName="ContactNameAndNumberDuringEmergenciesHome"
+                                name="ContactNameAndNumberDuringEmergenciesHome" />
+                        </div>
+                    </div>
+
+                    <!-- Offshore Data -->
+                    <div *ngIf="activeTab==='offshore'" class="row p-fluid">
+                        <div class="field col-6">
+                            <label>Seaman Book NO.</label>
+                            <input type="text" class="form-control" formControlName="SeamanBookNo"
+                                name="SeamanBookNo" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Seaman Issue Date</label>
+                            <input class="form-control" type="date" formControlName="SeamanIssueDate"
+                                name="SeamanIssueDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Seaman Expiry Date</label>
+                            <input class="form-control" type="date" formControlName="SeamanExpiryDate"
+                                name="SeamanExpiryDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Cicpa NO.</label>
+                            <input type="text" class="form-control" formControlName="CicpaNo" name="CicpaNo" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Cicpa Issue Date</label>
+                            <input class="form-control" type="date" formControlName="CicpaIssueDate"
+                                name="CicpaIssueDate" />
+                        </div>
+                        <div class="field col-6">
+                            <label>Cicpa Expiry Date</label>
+                            <input class="form-control" type="date" formControlName="CicpaExpiryDate"
+                                name="CicpaExpiryDate" />
+                        </div>
+                    </div>
+
+
+                    <!-- Qualifications Tab -->
+                    <div *ngIf="activeTab==='qualifications'" class="row p-fluid">
+
+                        <!-- Input Form to add a new Qualification -->
+                        <div class="row mb-3" [formGroup]="qualificationForm">
+                            <div class="field col-6">
+                                <label>Degree/Course</label>
+                                <input class="form-control" formControlName="DegreeOrCourse"
+                                    placeholder="Degree/Course" />
+                            </div>
+                            <div class="field col-6">
+                                <label>Major/Subject</label>
+                                <input class="form-control" formControlName="MajorOrSubject"
+                                    placeholder="Major/Subject" />
+                            </div>
+                            <div class="field col-6">
+                                <label>Issue Date</label>
+                                <input class="form-control" type="date" formControlName="CourseIssueDate" />
+                            </div>
+                            <div class="field col-6 mt-2">
+                                <label>University</label>
+                                <input class="form-control" formControlName="University" placeholder="University" />
+                            </div>
+                            <div class="field col-12 mt-2">
+                                <label>Country</label>
+                                <input class="form-control" formControlName="Country" placeholder="Country" />
+                            </div>
+
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addQualification()">
+                                    <i class="bi bi-plus-lg"></i> Add Qualification
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Qualifications Table -->
+                        <p-table [value]="qualifications.controls">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Degree/Course</th>
+                                    <th>Major/Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Expiry Date</th>
+                                    <th>University</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-q let-i="rowIndex">
+                                <tr>
+                                    <td>{{ q.value.DegreeOrCourse }}</td>
+                                    <td>{{ q.value.MajorOrSubject }}</td>
+                                    <td>{{ q.value.CourseIssueDate | date:'yyyy-MM-dd' }}</td>
+                                    <td>{{ q.value.ExpiryDate | date:'yyyy-MM-dd' }}</td>
+                                    <td>{{ q.value.University }}</td>
+                                    <td>{{ q.value.Country }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            (click)="removeQualification(i)">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+
+
+
+                    <!-- Certificates Tab -->
+                    <div *ngIf="activeTab==='certificates'" class="row p-fluid">
+
+                        <!-- Input Form to add a new Certificate -->
+                        <div class="row mb-3" [formGroup]="certificateForm">
+                            <div class="field col-6">
+                                <label>Capacity</label>
+                                <input class="form-control" formControlName="Capacity" name="Capacity"
+                                    placeholder="Capacity" />
+                            </div>
+                            <div class="field col-6">
+                                <label>Regulation</label>
+                                <input class="form-control" formControlName="Regulation" name="Regulation"
+                                    placeholder="Regulation" />
+                            </div>
+                            <div class="field col-6">
+                                <label>Issue Date</label>
+                                <input class="form-control" type="date" formControlName="IssueDate" name="IssueDate" />
+                            </div>
+                            <div class="field col-6 mt-2">
+                                <label>Expiry Date</label>
+                                <input class="form-control" type="date" formControlName="ExpiryDate"
+                                    name="ExpiryDate" />
+                            </div>
+                            <div class="field col-6 mt-2">
+                                <label>Issuing Authority</label>
+                                <input class="form-control" formControlName="IssuingAuthority" name="IssuingAuthority"
+                                    placeholder="Issuing Authority" />
+                            </div>
+                            <div class="field col-6 mt-2">
+                                <label>Limitations</label>
+                                <input class="form-control" formControlName="Limitations" name="Limitations"
+                                    placeholder="Limitations" />
+                            </div>
+                            <div class="field col-12 mt-2">
+                                <label>Country</label>
+                                <input class="form-control" formControlName="Country" name="Country"
+                                    placeholder="Country" />
+                            </div>
+
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addCertificate()">
+                                    <i class="bi bi-plus"></i> Add Certificate
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--  Certificates Table  -->
+                        <p-table [value]="certificates.controls">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Capacity</th>
+                                    <th>Regulation</th>
+                                    <th>Issue Date</th>
+                                    <th>Expiry Date</th>
+                                    <th>Issuing Authority</th>
+                                    <th>Limitations</th>
+                                    <th>Country</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-c let-i="rowIndex">
+                                <tr>
+                                    <td>{{ c.value.Capacity }}</td>
+                                    <td>{{ c.value.Regulation }}</td>
+                                    <td>{{ c.value.IssueDate | date:'yyyy-MM-dd' }}</td>
+                                    <td>{{ c.value.ExpiryDate | date:'yyyy-MM-dd' }}</td>
+                                    <td>{{ c.value.IssuingAuthority }}</td>
+                                    <td>{{ c.value.Limitations }}</td>
+                                    <td>{{ c.value.Country }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" (click)="removeCertificate(i)"
+                                            title="Remove">
+                                            <i class="pi pi-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+
+                    </div>
+
+                    <!-- STCW / Other Training Tab -->
+                    <div [hidden]="activeTab !== 'trainings'" class="row p-fluid" [formGroup]="seafarerForm">
+                        <div formArrayName="Trainings">
+
+                            <p-table [value]="trainings.controls">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Institute</th>
+                                        <th>Issue Date</th>
+                                        <th>Expiry Date</th>
+                                        <th style="width: 80px;">Actions</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-i="rowIndex">
+                                    <tr [formGroupName]="i">
+                                        <td><input class="form-control form-control-sm" formControlName="Course"
+                                                (keydown.enter)="$event.preventDefault()"></td>
+                                        <td><input class="form-control form-control-sm" formControlName="Institute"
+                                                (keydown.enter)="$event.preventDefault()"></td>
+                                        <td><input type="date" class="form-control form-control-sm"
+                                                formControlName="IssueDate"></td>
+                                        <td><input type="date" class="form-control form-control-sm"
+                                                formControlName="ExpiryDate"></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger" (click)="removeTraining(i)"
+                                                title="Remove">
+                                                <i class="pi pi-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+
+
+                            <!-- Add Training Button -->
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addTraining()">
+                                    <i class="bi bi-plus"></i> Add Stcw/Other Training
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Languages Known Tab -->
+                    <div [hidden]="activeTab !== 'languages'" class="row g-2" [formGroup]="seafarerForm">
+                        <div formArrayName="Languages">
+                            <p-table [value]="languages.controls" [tableStyle]="{'min-width': '50rem'}">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 20%;">Language</th>
+                                        <th style="width: 15%;">Spoken</th>
+                                        <th style="width: 15%;">Written</th>
+                                        <th style="width: 15%;">Understood</th>
+                                        <th style="width: 20%;">Mother Tongue</th>
+                                        <th style="width: 15%;">Actions</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-i="rowIndex" let-lang="data">
+                                    <tr [formGroupName]="i">
+                                        <td>
+                                            <input type="text" class="form-control" formControlName="Language"
+                                                placeholder="Language" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" formControlName="Spoken"
+                                                placeholder="Spoken" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" formControlName="Written"
+                                                placeholder="Written" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" formControlName="Understood"
+                                                placeholder="Understood" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" formControlName="MotherTongue"
+                                                placeholder="Mother Tongue" />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="removeLanguage(i)">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addLanguage()">
+                                    <i class="bi bi-plus"></i> Add Language
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- References Tab -->
+                    <div [hidden]="activeTab !== 'references'" class="row g-2" [formGroup]="seafarerForm">
+                        <div formArrayName="References">
+                            <p-table [value]="references.controls">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Company</th>
+                                        <th>Contact Info</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-i="rowIndex">
+                                    <tr [formGroupName]="i">
+                                        <td><input type="text" class="form-control" formControlName="PersonName"
+                                                placeholder="Name" /></td>
+                                        <td><input type="text" class="form-control" formControlName="CompanyName"
+                                                placeholder="Company" /></td>
+                                        <td class="d-flex gap-1">
+                                            <input type="text" class="form-control" style="width:80px;"
+                                                formControlName="Country" placeholder="Country" />
+                                            <input type="text" class="form-control" style="width:80px;"
+                                                formControlName="Fax" placeholder="Fax" />
+                                            <input type="text" class="form-control" style="width:150px;"
+                                                formControlName="EmailId" placeholder="EmailId" />
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="removeReference(i)">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addReference()">
+                                    <i class="bi bi-plus-lg"></i> Add Reference
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Health / Medical Tab -->
+                    <div [hidden]="activeTab !== 'health'" class="row g-2" [formGroup]="seafarerForm">
+                        <div>
+
+                            <div class="col-6">
+                                <label class="form-label">Health Insurance Expiry Date</label>
+                                <input type="date" class="form-control" formControlName="InsuranceDate" />
+                            </div>
+
+                            <p-table [value]="medicals.controls">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Medical / Vaccination</th>
+                                        <th>Date</th>
+                                        <th>Expiry Date</th>
+                                        <th>Remarks</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-med let-i="rowIndex">
+                                    <tr [formGroupName]="i">
+                                        <td><input type="text" class="form-control"
+                                                formControlName="MedicalVaccination" />
+                                        </td>
+                                        <td><input type="date" class="form-control" formControlName="Date" /></td>
+                                        <td><input type="date" class="form-control" formControlName="ExpiryDate" /></td>
+                                        <td><input type="text" class="form-control" formControlName="Remarks" /></td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="removeMedical(i)">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="addMedical()">
+                                    <i class="bi bi-plus-lg"></i> Add Medical
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <p-footer>
+        <button pButton label="Save" icon="pi pi-check" (click)="saveSeafarer()"
+            [disabled]="!seafarerForm.valid"></button>
+        <button pButton label="Cancel" icon="pi pi-times" class="p-button-secondary"
+            (click)="closeSeafarerModal()"></button>
+    </p-footer>
+</p-dialog>

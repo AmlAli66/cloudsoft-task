@@ -1,0 +1,47 @@
+<!-- Responsive Navbar -->
+<nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold my-1" routerLink="/">
+            <!-- <img src="assets/logo.svg" alt="Logo" height="30" class="animated-logo"> -->
+            <i class="bi bi-person-lines-fill animated-logo text-primary"></i>
+
+            <span class="d-none d-md-inline">Marine Service</span>
+        </a>
+
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- Search Box -->
+            <div class="search-box ms-auto me-3 d-none d-md-flex">
+                <input type="text" placeholder="Search..." class="search-input" />
+                <button class="voice-btn" (click)="startVoiceSearch()">
+                    <i class="bi bi-mic"></i>
+                </button>
+            </div>
+
+            <!-- Links -->
+            <ul class="navbar-nav">
+                <li class="nav-item mx-1" *ngFor="let link of navLinks">
+                    <a class="nav-link px-2 py-2 d-flex justify-content-center align-items-center gap-2"
+                        [routerLink]="link.path" routerLinkActive="active">
+                        <i class="bi" [ngClass]="link.icon"></i> <span>{{ link.label }}</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search box for mobile -->
+            <div class="search-box mt-2 w-100 d-md-none">
+                <input type="text" placeholder="Search..." class="search-input" />
+                <button class="voice-btn" (click)="startVoiceSearch()">
+                    <i class="bi bi-mic"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
