@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 export class SeafarerService {
 
   private readonly baseUrl = environment.apiUrl;
+  // private baseUrl = 'https://test.erppluscloud.com:4338/api';
 
   constructor(private http: HttpClient) {}
 
