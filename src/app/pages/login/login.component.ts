@@ -7,38 +7,12 @@ import { AuthService } from '../../core/services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule ,CommonModule],
+  imports: [ReactiveFormsModule ,CommonModule ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  // username = '';
-  // password = '';
-  // loading = false;
-  // errorMessage = '';
-
-  // constructor(private authService: AuthService, private router: Router) {}
-
-  // onLogin() {
-  //   this.loading = true;
-  //   this.errorMessage = '';
-
-  //   this.authService.login(this.username, this.password).subscribe({
-  //     next: (res) => {
-  //       localStorage.setItem('token', res.access_token);
-  //       localStorage.setItem('username', res.userName);
-  //       this.router.navigate(['/seafarers']);
-  //     },
-  //     error: (err) => {
-  //       this.errorMessage = 'Invalid username or password';
-  //       this.loading = false;
-  //     },
-  //     complete: () => {
-  //       this.loading = false;
-  //     }
-  //   });
-  // }
-
+  
   loginForm!: FormGroup; // Define the form group
   loading = false;
   errorMessage = '';

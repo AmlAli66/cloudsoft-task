@@ -1,35 +1,33 @@
 <div class="login-page">
-    <!-- Animated Waves -->
-    <div class="waves-container">
-        <svg class="wave-svg" viewBox="0 24 150 28" preserveAspectRatio="none">
-            <defs>
-                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v28h-352z" />
-            </defs>
-            <g class="parallax1">
-                <use xlink:href="#gentle-wave" x="50" y="3" fill="var(--wave-color)" />
-            </g>
-            <g class="parallax2">
-                <use xlink:href="#gentle-wave" x="50" y="0" fill="var(--wave-color-alt)" />
-            </g>
-        </svg>
+    <!-- Left Side Background with Ship -->
+    <div class="left-side">
+        <img src="assets/background.png" alt="Ship Background" class="ship-image" />
     </div>
-    <!-- Login Box -->
-    <div class="login-container">
-        <h2 class="text-center mb-4">Seafarer Login</h2>
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                <input type="text" formControlName="username" class="form-control" placeholder="Username" required />
-            </div>
-            <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                <input type="password" formControlName="password" class="form-control" placeholder="Password"
-                    required />
-            </div>
-            <button class="btn btn-login w-100" type="submit" [disabled]="loginForm.invalid || loading">
-                {{ loading ? 'Logging in...' : 'Login' }}
-            </button>
-            <p *ngIf="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p>
-        </form>
+
+    <!-- Right Side Login Form -->
+    <div class="right-side">
+        <div class="login-container">
+            <!-- <div class="logo text-center mb-3">
+                <img src="assets/logo (1).png" alt="Crewvector Logo" class="logo-img" />
+            </div> -->
+            <h2 class="text-center logo-text mb-4">Overseas</h2>
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                <div class="mb-3 input-group animated-input">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" formControlName="username" class="form-control" placeholder="User name"
+                        required />
+                </div>
+                <div class="mb-3 input-group animated-input">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" formControlName="password" class="form-control" placeholder="Password"
+                        required />
+                </div>
+                <button class="btn btn-login w-100" type="submit" [disabled]="loginForm.invalid || loading">
+                    {{ loading ? 'Logging in...' : 'Login' }}
+                </button>
+                <p *ngIf="errorMessage" class="text-danger mt-2 text-center">{{ errorMessage }}</p>
+            </form>
+            <p class="text-center mt-4 text-muted">Crewvector © 2025</p>
+        </div>
     </div>
 </div>
