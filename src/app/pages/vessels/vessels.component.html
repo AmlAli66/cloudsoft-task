@@ -49,7 +49,6 @@
                                 <!-- Edit button -->
                                 <button class="btn d-flex align-items-center" title="Edit"
                                     (click)="onEditVessel(vessel)">
-                                    <!-- <i class="pi pi-pencil"></i> -->
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                                 <!--  Delete button -->
@@ -91,3 +90,7 @@
     </div>
 
 </div>
+
+
+<app-vessel-modal [(visible)]="vesselDialog" [isEdit]="isEdit" [vessel]="selectedVessel" (onSave)="handleSave($event)">
+</app-vessel-modal>

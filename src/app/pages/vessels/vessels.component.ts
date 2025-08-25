@@ -4,17 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Table, TableModule } from 'primeng/table';
 import { SeafarerService } from '../../core/services/seafarer.service';
+import { VesselModalComponent } from "../../components/vessel-modal/vessel-modal.component";
 
 @Component({
   selector: 'app-vessels',
   standalone: true,
-  imports: [CommonModule ,TableModule ,MultiSelectModule,FormsModule],
+  imports: [CommonModule, TableModule, MultiSelectModule, FormsModule, VesselModalComponent],
   templateUrl: './vessels.component.html',
   styleUrl: './vessels.component.scss'
 })
 export class VesselsComponent {
   loading = true;
   vessels: any[] = [];
+  vesselDialog = false;
+  isEdit = false;
+  selectedVessel: any = {};
 
 
 //  // all columns
@@ -157,15 +161,28 @@ customSort(event: any) {
 }
 
 
-openVesselModal(){
-  console.log('Open vessel modal');
+openVesselModal() {
+  this.isEdit = false;
+  this.selectedVessel = {}; // بيانات جديدة
+  this.vesselDialog = true;
 }
+
 //====================Edit vessel====================
-  onEditVessel(vessel: any) {
-    console.log('Edit vessel:', vessel);
+
+onEditVessel(vessel: any) {
+  this.isEdit = true;
+  this.selectedVessel = { ...vessel }; // نسخة من البيانات
+  this.vesselDialog = true;
+}
+
+handleSave(vessel: any) {
+  if (this.isEdit) {
+    const index = this.vessels.findIndex(v => v.no === vessel.no);
+    if (index > -1) this.vessels[index] = vessel;
+  } else {
+    this.vessels.push(vessel);
   }
-
-
+}
   loadSeafarers() {
     this.seafarerService.getAllSeafarers().subscribe({
       next: (res: any) => {

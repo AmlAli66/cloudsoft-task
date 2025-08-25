@@ -11,7 +11,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule,Validators, Fo
 import { Certificate, DropdownOption, Language, MedicalData, Qualification, Reference, Seafarer, Training, WorkExperience } from '../../core/interfaces/SeafarerDetails';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
-import { EmployeeFilterPipe } from '../../core/pipes/employee-filter.pipe';
+import { FilterPipe } from '../../core/pipes/employee-filter.pipe';
+import { CustomDropdownComponent } from "../../shared/custom-dropdown/custom-dropdown.component";
 @Component({
   selector: 'app-seafarers',
   standalone: true,
@@ -29,7 +30,7 @@ import { EmployeeFilterPipe } from '../../core/pipes/employee-filter.pipe';
     InputTextModule,
     DropdownModule,
     CheckboxModule, ReactiveFormsModule,
-    EmployeeFilterPipe],
+    FilterPipe, CustomDropdownComponent],
   templateUrl: './seafarers.component.html',
   styleUrl: './seafarers.component.scss',
 })
@@ -123,7 +124,7 @@ export class SeafarersComponent implements OnInit {
     this.loadDropdowns();
     this.initForm();
   }
-  
+
     //Page
   //to keep the selected columns order in the UI
 get orderedSelectedColumns() {
@@ -421,7 +422,7 @@ applyFilters() {
 
   saveSeafarer() {
     if (this.seafarerForm.invalid) {
-      this.seafarerForm.markAllAsTouched();
+      this.seafarerForm.markAllAsTouched();    
       return;
     }
 
@@ -456,12 +457,10 @@ applyFilters() {
           this.loadSeafarers();
         } else {
           console.error('⚠️ Error from API:', res?.ErrorMessage);
-          // استخدم PrimeNG Message بدلاً من alert()
         }
       },
       error: (err) => {
         console.error('❌ API Error:', err);
-        // استخدم PrimeNG Message بدلاً من alert()
       }
     });
   }
@@ -485,24 +484,24 @@ applyFilters() {
   }
 
 
-dropdownOpen: { [key: string]: boolean } = {};
-selectedValues: { [key: string]: DropdownOption|null } = {};
-searchTerms: { [key: string]: string } = {};
-empAndVendorLoading: { [key: string]: boolean } = {};
+  selectedValues: { [key: string]: DropdownOption|null } = {};
+  empAndVendorLoading: { [key: string]: boolean } = {};
+// dropdownOpen: { [key: string]: boolean } = {};
+// searchTerms: { [key: string]: string } = {};
 
 // employees: DropdownOption[] = [];
 // vendors: DropdownOption[] = [];
 
-toggleDropdown(controlName: string) {
-  this.dropdownOpen[controlName] = !this.dropdownOpen[controlName];
-  this.searchTerms[controlName] = ''; // reset search on open
-}
+// toggleDropdown(controlName: string) {
+//   this.dropdownOpen[controlName] = !this.dropdownOpen[controlName];
+//   this.searchTerms[controlName] = ''; // reset search on open
+// }
 
-selectItem(controlName: string, item: any) {
-  this.selectedValues[controlName] = item;
-  this.seafarerForm.get(controlName)?.setValue(item.Value);
-  this.dropdownOpen[controlName] = false;
-}
+// selectItem(controlName: string, item: any) {
+//   this.selectedValues[controlName] = item;
+//   this.seafarerForm.get(controlName)?.setValue(item.Value);
+//   this.dropdownOpen[controlName] = false;
+// }
 
 loadDropdowns() {
   this.empAndVendorLoading['EmpId'] = true;
@@ -545,6 +544,11 @@ loadDropdowns() {
       this.empAndVendorLoading['VisaSponsorId'] = false;
     }
   });
+}
+
+onDropdownChange(controlName: string, item: any) {
+  this.selectedValues[controlName] = item;
+  this.seafarerForm.get(controlName)?.setValue(item?.Value || null);
 }
 
 

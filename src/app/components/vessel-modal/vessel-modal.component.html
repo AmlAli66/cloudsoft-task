@@ -1,0 +1,236 @@
+<p-dialog header="{{ isEdit ? 'Edit Vessel' : 'Add Vessel' }}" [(visible)]="visible" [modal]="true"
+    [style]="{ width: '70vw' }" [baseZIndex]="10000" (onHide)="closeDialog()">
+
+    <form [formGroup]="vesselForm" class="container-fluid">
+        <div class="row g-3">
+
+            <!-- Name -->
+            <div class="col-md-4">
+                <label class="form-label">Name *</label>
+                <input type="text" class="form-control" formControlName="name" title="name">
+            </div>
+
+            <!-- Ship owner -->
+            <div class="col-md-4">
+                <label class="form-label">Ship owner *</label>
+                <input type="text" class="form-control" formControlName="shipOwner" title="Ship owner">
+            </div>
+
+            <!-- MMS -->
+            <div class="col-md-4">
+                <label class="form-label">MMS</label>
+                <input type="text" class="form-control" formControlName="mms" title="MMS">
+            </div>
+
+            <!-- Our fleet -->
+            <div class="col-md-4">
+                <label class="form-label">Our fleet</label>
+                <app-custom-dropdown formControlName="ourFleet" [items]="ourFleetOptions"></app-custom-dropdown>
+            </div>
+
+
+            <!-- Ship manager -->
+            <div class="col-md-4">
+                <label class="form-label">Ship manager *</label>
+                <input type="text" class="form-control" formControlName="shipManager" title="Ship manager">
+            </div>
+
+            <!-- Call sign -->
+            <div class="col-md-4">
+                <label class="form-label">Call sign</label>
+                <input type="text" class="form-control" formControlName="callSign" title="Call sign">
+            </div>
+
+
+            <!-- IMO -->
+            <div class="col-md-4">
+                <label class="form-label">IMO</label>
+                <input type="text" class="form-control" formControlName="imo" title="IMO">
+            </div>
+
+            <!-- DWT -->
+            <div class="col-md-4">
+                <label class="form-label">DWT</label>
+                <input type="number" class="form-control" formControlName="dwt" title="DWT">
+            </div>
+
+            <!-- Phone -->
+            <div class="col-md-4">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" formControlName="phone" title="Phone">
+            </div>
+
+            <!-- Built year -->
+            <div class="col-md-4">
+                <label class="form-label">Built year</label>
+                <input type="number" class="form-control" formControlName="builtYear" title="Built year">
+            </div>
+
+            <!-- GRT -->
+            <div class="col-md-4">
+                <label class="form-label">GRT</label>
+                <input type="number" class="form-control" formControlName="grt" title="GRT">
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-4">
+                <label class="form-label">E-mail</label>
+                <input type="email" class="form-control" formControlName="email" title="E-mail">
+            </div>
+
+            <!-- Vessel type -->
+            <div class="col-md-4">
+                <label class="form-label">Vessel type *</label>
+                <app-custom-dropdown formControlName="vesselType" [items]="vesselTypesOptions"></app-custom-dropdown>
+            </div>
+
+
+            <!-- TEU -->
+            <div class="col-md-4">
+                <label class="form-label">TEU</label>
+                <input class="form-control" type="number" title="TEU" formControlName="teu">
+            </div>
+
+            <!-- Type of cargo pump -->
+            <div class="col-md-4">
+                <label class="form-label">Type of cargo pump</label>
+                <input class="form-control" type="text" formControlName="cargoPumpType" title="Type of cargo pump">
+            </div>
+            <!-- Flag -->
+            <div class="col-md-4">
+                <label class="form-label">Flag *</label>
+                <app-custom-dropdown formControlName="flag" [items]="flagsOptions"></app-custom-dropdown>
+            </div>
+
+            <!-- Cargo Tanks -->
+            <div class="col-md-4">
+                <label class="form-label">Cargo tanks</label>
+                <input type="text" class="form-control" formControlName="cargoTanks" title="Cargo tanks">
+            </div>
+
+            <!-- Engine model -->
+            <div class="col-md-4">
+                <label class="form-label">Engine model</label>
+                <input type="text" class="form-control" formControlName="engineModel" title="Engine model">
+            </div>
+
+            <!-- Geared/Cranes -->
+            <div class="col-md-4">
+                <label class="form-label">Geared/Cranes</label>
+                <app-custom-dropdown formControlName="gearedCranes" [items]="gearedCranesOptions"></app-custom-dropdown>
+
+            </div>
+
+            <!-- Cargo gear -->
+            <div class="col-md-4">
+                <label class="form-label">Cargo gear</label>
+                <input type="text" class="form-control" formControlName="cargoGear" title="Cargo gear">
+            </div>
+
+            <!-- Engine type -->
+            <div class="col-md-4">
+                <label class="form-label">Engine type</label>
+                <input type="text" class="form-control" formControlName="engineType" title="Engine type">
+            </div>
+
+            <!-- DIMS -->
+            <div class="col-md-4">
+                <label class="form-label">DIMS</label>
+                <input type="text" class="form-control" formControlName="dims" title="DIMS">
+            </div>
+
+            <!-- Speed -->
+            <div class="col-md-4">
+                <label class="form-label">Speed</label>
+                <input type="number" class="form-control" formControlName="speed" title="Speed">
+            </div>
+
+            <!-- Engine power (HP) -->
+            <div class="col-md-4">
+                <label class="form-label">Engine power (HP)</label>
+                <input type="number" class="form-control" formControlName="enginePowerHp" title="Engine power (HP)">
+            </div>
+
+            <!-- ECDIS type -->
+            <div class="col-md-4">
+                <label class="form-label">ECDIS type</label>
+                <app-custom-dropdown formControlName="ecdisType" [items]="ecdisTypeOptions"></app-custom-dropdown>
+
+            </div>
+
+            <!-- Engine power (kWt) -->
+            <div class="col-md-4">
+                <label class="form-label">Engine power (kWt)</label>
+                <input type="number" class="form-control" formControlName="enginePowerKw" title="Engine power (kWt)">
+            </div>
+
+            <!-- Comment -->
+            <div class="col-md-12">
+                <label class="form-label">Comment</label>
+                <textarea class="form-control" rows="3" formControlName="comment" title="comment"></textarea>
+            </div>
+
+            <!-- Attachment -->
+            <div class="col-md-12">
+                <div class="custom-upload-container">
+                    <label class="form-label">Attachments</label>
+
+                    <!-- Drop Zone -->
+                    <!-- <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+                        <i class="pi pi-cloud-upload icon"></i>
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <p class="m-0">Drag & Drop files here or</p>
+                            <button type="button" class="browse-btn" (click)="fileInput.click()">Browse Files</button>
+
+                        </div>
+                        <input type="file" #fileInput multiple (change)="onFileSelected($event)" hidden>
+                    </div> -->
+                    <!-- Drop Zone -->
+                    <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+                        <div class="icon-wrapper">
+                            <i class="pi pi-cloud-upload icon"></i>
+                        </div>
+
+                        <div class="drop-text">
+                            <p>Drag & Drop files here</p>
+                            <span class="me-2">or</span>
+                            <button type="button" class="browse-btn" (click)="fileInput.click()">Browse Files</button>
+                        </div>
+
+                        <input type="file" #fileInput multiple (change)="onFileSelected($event)" hidden>
+                    </div>
+
+                    <!-- File Preview -->
+                    <div class="file-list" *ngIf="files.length > 0">
+                        <div class="file-item" *ngFor="let file of files; let i = index">
+                            <div class="d-flex justify-content-start align-items-center gap-1">
+                                <i class="pi pi-file file-icon"></i>
+                                <span class="file-name">{{ file.name }}</span>
+                            </div>
+                            <button class="remove-btn" (click)="removeFile(i)" title="remove">
+                                <i class="pi pi-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="actions" *ngIf="files.length > 0">
+                        <button class="upload-btn" (click)="uploadFiles()">
+                            <i class="pi pi-upload"></i> Upload
+                        </button>
+                        <button class="clear-btn" (click)="clearFiles()">
+                            <i class="pi pi-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <p-footer>
+        <button pButton label="Save" icon="pi pi-check" title="save" (click)="save()"></button>
+        <button pButton label="Cancel" icon="pi pi-times" title="cancel" class="p-button-secondary"
+            (click)="closeDialog()"></button>
+    </p-footer>
+</p-dialog>

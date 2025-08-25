@@ -1,0 +1,161 @@
+// *********************Custom Upload Files*************
+  /* Drop Zone */
+  .drop-zone {
+    border-radius: 16px;
+    padding: 1.2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #6ea8fe1e, #1d77ff42);
+    transition: all 0.4s ease;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 1rem;
+  }
+  
+  .drop-zone:hover {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+  }
+  
+  .icon {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    padding: 0.25rem;
+    background: linear-gradient(135deg, #4a90e2, #6a82fb);
+    box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+    border: 4px solid rgba(255, 255, 255, 0.3); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 28px rgba(74, 144, 226, 0.4);
+  }
+  
+  
+  .browse-btn {
+    background: linear-gradient(90deg, #1d78ff, #6ea8fe);
+    color: white;
+    padding: 0.25rem 0.5rem ;
+    border-radius: 10px;
+    border: none;
+    // font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .browse-btn:hover {
+    background: linear-gradient(90deg, #1458cc, #4e9dff);
+    transform: scale(1.05);
+  }
+  
+  /* File List */
+  .file-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: fit-content;
+    gap: 1rem;;
+    background: #c3d1e7;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .file-icon {
+    font-size: 1.3rem;
+    color: #1d78ff;
+    margin-right: 10px;
+  }
+  
+  .file-name {
+    flex: 1;
+    font-size: 0.8rem;
+    color: #333;
+  }
+  
+  .remove-btn {
+    background: #ff4d4f;
+    color: #fff;
+    border: none;
+    width: 2rem ;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .remove-btn:hover {
+    background: #e63946;
+  }
+  
+  /* Actions */
+  .actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 12px;
+  }
+  
+  .upload-btn {
+    background: linear-gradient(90deg, #198754, #28a745);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-btn:hover {
+    background: linear-gradient(90deg, #157347, #218838);
+    transform: translateY(-2px);
+  }
+  
+  .clear-btn {
+    background: linear-gradient(90deg, #6c757d, #868e96);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .clear-btn:hover {
+    background: linear-gradient(90deg, #5a6268, #6c757d);
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  

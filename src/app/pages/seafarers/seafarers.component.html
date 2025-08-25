@@ -187,7 +187,7 @@
 
 
                         <!-- Employee Dropdown -->
-                        <div class="field col-6 position-relative">
+                        <!-- <div class="field col-6 position-relative">
                             <label>Employee</label>
 
                             <div class="custom-dropdown form-control d-flex justify-content-between align-items-center"
@@ -211,6 +211,14 @@
                                     </li>
                                 </ul>
                             </div>
+
+                        </div> -->
+                        <div class="field col-6">
+                            <app-custom-dropdown label="Employee" placeholder="Select Employee" [items]="employees"
+                                bindLabel="Text" bindValue="Value" [(selectedItem)]="selectedValues['EmpId']"
+                                [loading]="empAndVendorLoading['EmpId']"
+                                (selectedItemChange)="onDropdownChange('EmpId', $event)">
+                            </app-custom-dropdown>
 
                         </div>
 
@@ -298,7 +306,7 @@
                             </p-dropdown>
                             <small *ngIf="f.VisaSponsorId.touched && f.VisaSponsorId.invalid" class="p-error">Required</small>
                         </div> -->
-                        <div class="field col-6 position-relative">
+                        <!-- <div class="field col-6 position-relative">
                             <label>Visa Sponsor</label>
 
                             <div class="custom-dropdown form-control d-flex justify-content-between align-items-center"
@@ -323,7 +331,18 @@
                                     </li>
                                 </ul>
                             </div>
+                        </div> -->
+
+
+                        <div class="field col-6">
+                            <app-custom-dropdown label="Visa Sponsor" placeholder="Select Sponsor" [items]="vendors"
+                                bindLabel="Text" bindValue="Value" [(selectedItem)]="selectedValues['VisaSponsorId']"
+                                [loading]="empAndVendorLoading['VisaSponsorId']"
+                                (selectedItemChange)="onDropdownChange('VisaSponsorId', $event)">
+                            </app-custom-dropdown>
+
                         </div>
+
                         <div class="field col-6">
                             <label>Visa / UAE ID No.</label>
                             <input class="form-control" formControlName="VisaUAEIdNO" name="VisaUAEIdNO" />
