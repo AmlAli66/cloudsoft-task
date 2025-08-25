@@ -17,10 +17,11 @@
 
         <ul class="list-unstyled mb-0">
             <li *ngIf="loading" class="dropdown-item text-muted">Loading...</li>
-            <li *ngFor="let item of items | slice:0:100 | filter:searchTerm:bindLabel" (click)="selectItem(item)"
-                class="dropdown-item">
+            <li *ngFor="let item of items | slice:0:100 | filter:searchTerm:bindLabel"
+                (click)="selectItem(item); $event.stopPropagation()" class="dropdown-item">
                 {{ item[bindLabel] }}
             </li>
+
         </ul>
     </div>
 </div>

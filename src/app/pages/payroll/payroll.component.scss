@@ -1,0 +1,64 @@
+
+/***************** Table custom style********************** */
+/* ================= Modern Table Wrapper ================= */
+
+/* Table base styles */
+::ng-deep .modern-table-container .p-datatable {
+    border: none !important;
+    background: transparent !important;
+    color: #2f3a4a;
+    font-size: 0.75rem;
+  }
+  
+  /* Header */
+  ::ng-deep .modern-table-container .p-datatable-thead > tr > th {
+    background: linear-gradient(135deg, #e0f7fa, #e3f2fd);
+    color: #37474f !important;
+    font-weight: 600;
+    padding: 6px 10px !important;
+    font-size: 0.75rem;
+    border: none;
+    transition: background 0.3s ease;
+  }
+  ::ng-deep .modern-table-container .p-datatable-thead > tr > th:hover {
+    background: linear-gradient(135deg, #bbdefb, #b2ebf2);
+  }
+  
+  /* Body */
+  ::ng-deep .modern-table-container .p-datatable-tbody > tr {
+    transition: background 0.25s ease;
+  }
+  ::ng-deep .modern-table-container .p-datatable-tbody > tr:hover {
+    background: rgba(0, 123, 255, 0.05);
+  }
+  ::ng-deep .modern-table-container .p-datatable-tbody > tr > td {
+    padding: 6px 10px !important;
+    border: none;
+    font-size: 0.75rem;
+    vertical-align: middle;
+  }
+  
+  
+// **************** badge style ****************** */
+.badge-paid {
+    background-color: #e6f4ea;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .badge-pending {
+    background-color: #fff8e1;
+    color: #f9a825;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+//   ***************** custom dropdown style ****************** */
+  app-custom-dropdown{
+    min-width: 200px;
+  }

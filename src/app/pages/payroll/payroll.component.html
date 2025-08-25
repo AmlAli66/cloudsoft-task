@@ -1,5 +1,93 @@
-<div class="page-placeholder">
-    <div class="icon">🚧</div>
-    <h2>Payroll</h2>
-    <p>This page is under construction. Features will be added soon!</p>
+<!-- Loader -->
+<div *ngIf="loading" class="page-loader">
+    <i class="pi pi-spin pi-spinner"></i>
+</div>
+
+<div class="Payroll-page-content">
+    <!-- Caption Section -->
+    <div class="caption-section mb-3">
+        <h3 class="caption-title">Payroll Records</h3>
+
+        <div class="caption-actions d-flex gap-3">
+
+            <!-- Filter by Month -->
+            <app-custom-dropdown [items]="monthOptions" bindLabel="label" bindValue="value" placeholder="Select Month"
+                [(ngModel)]="selectedMonth" (ngModelChange)="applyFilters()">
+            </app-custom-dropdown>
+
+            <!-- Filter by Vessel -->
+            <app-custom-dropdown [items]="vesselOptions" bindLabel="label" bindValue="value" placeholder="Select Vessel"
+                [(ngModel)]="selectedVessel" (ngModelChange)="applyFilters()">
+            </app-custom-dropdown>
+
+            <!-- Export Button -->
+            <button type="button" class="btn-primary-action" (click)="exportPayroll()">
+                <i class="pi pi-upload"></i>
+                <span>Export</span>
+            </button>
+        </div>
+
+
+
+    </div>
+
+    <!-- Payroll Table -->
+    <div class="modern-table-container">
+        <p-table #dt [value]="filteredPayrolls" [paginator]="true" [rows]="15" [loading]="false">
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of allColumns" class="text-nowrap">
+                        {{ col.header }}
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-row>
+                <tr>
+                    <td *ngFor="let col of allColumns" class="text-nowrap">
+                        <ng-container [ngSwitch]="col.field">
+                            <!-- Bold Name -->
+                            <span *ngSwitchCase="'name'" class="fw-bold">{{ row.name }}</span>
+
+                            <!-- Bold Net Pay -->
+                            <span *ngSwitchCase="'netPay'" class="fw-bold">{{ row.netPay }}</span>
+
+                            <!-- Status Badge -->
+                            <span *ngSwitchCase="'status'"
+                                [ngClass]="{'badge-paid': row.status==='Paid', 'badge-pending': row.status==='Pending'}">
+                                {{ row.status }}
+                            </span>
+
+                            <!-- Actions -->
+                            <ng-container *ngSwitchCase="'actions'">
+                                <div class="d-flex gap-2">
+                                    <button class="btn" title="View" (click)="viewPayroll(row)">
+                                        <i class="bi bi-eye text-primary"></i>
+                                    </button>
+                                    <button *ngIf="row.status === 'Pending'" class="btn" title="Mark Paid"
+                                        (click)="markAsPaid(row)">
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                    </button>
+                                </div>
+                            </ng-container>
+
+                            <!-- Default -->
+                            <span *ngSwitchDefault>{{ row[col.field] || '—' }}</span>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <!-- Empty Message -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="allColumns.length" class="text-center text-danger fw-bold">
+                        No data available for the selected filters.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 </div>

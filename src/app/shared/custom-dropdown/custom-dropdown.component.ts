@@ -45,7 +45,11 @@ export class CustomDropdownComponent implements ControlValueAccessor {
     this.onChange(item ? item[this.bindValue] : null);
     this.onTouched();
     this.dropdownOpen = false;
+  
+    // Force async update for better sync with parent
+    setTimeout(() => {}, 0);
   }
+  
 
   // ControlValueAccessor Methods
   writeValue(value: any): void {
