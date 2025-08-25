@@ -32,7 +32,6 @@ import { EmployeeFilterPipe } from '../../core/pipes/employee-filter.pipe';
     EmployeeFilterPipe],
   templateUrl: './seafarers.component.html',
   styleUrl: './seafarers.component.scss',
-
 })
 
 export class SeafarersComponent implements OnInit {
@@ -124,12 +123,18 @@ export class SeafarersComponent implements OnInit {
     this.loadDropdowns();
     this.initForm();
   }
+  
     //Page
   //to keep the selected columns order in the UI
 get orderedSelectedColumns() {
   const cols = this.allColumns.filter(col =>
     this.selectedColumns.some(sel => sel.field === col.field)
   );
+   // Add actions column at the end always
+  const actionsCol = this.allColumns.find(c => c.field === 'actions');
+  if (actionsCol && !cols.includes(actionsCol)) {
+    cols.push(actionsCol);
+  }
   return cols;
 }
 

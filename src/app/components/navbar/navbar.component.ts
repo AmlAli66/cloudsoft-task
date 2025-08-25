@@ -25,4 +25,5 @@ export class NavbarComponent {
   startVoiceSearch() {
     alert('🎤 Voice search will be implemented here.');
   }
+  
 }

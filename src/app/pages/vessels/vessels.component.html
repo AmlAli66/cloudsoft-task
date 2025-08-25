@@ -1,5 +1,93 @@
-<div class="page-placeholder">
-    <div class="icon">🚧</div>
-    <h2>Vessels</h2>
-    <p>This page is under construction. Features will be added soon!</p>
+<!-- Loader -->
+<div *ngIf="loading" class="page-loader">
+    <i class="pi pi-spin pi-spinner"></i>
+</div>
+<div class="Vessels-page-content">
+    <!-- Caption section -->
+    <div class="caption-section mb-3">
+        <!-- Title -->
+        <h3 class="caption-title">Vessels List</h3>
+
+        <!-- Actions (buttons + multiSelect) -->
+        <div class="caption-actions">
+            <!-- Add Vessel button -->
+            <button type="button" class="btn-primary-action" (click)="openVesselModal()">
+                <i class="pi pi-plus"></i>
+                <span>Add Vessel</span>
+            </button>
+
+            <!-- Displayed columns -->
+            <p-multiSelect [options]="allColumnsWithoutActions" [(ngModel)]="selectedColumns" optionLabel="header"
+                placeholder="Display Columns" selectedItemsLabel="{0} columns selected" display="chip">
+            </p-multiSelect>
+        </div>
+    </div>
+
+    <!-- Modern styled table -->
+    <div class="modern-table-container">
+        <p-table #dt [value]="vessels" [paginator]="true" [rows]="15" [loading]="false" [customSort]="true"
+            (sortFunction)="customSort($event)" responsiveLayout="scroll">
+
+            <!-- Table header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of orderedSelectedColumns" [pSortableColumn]="col.field" class="text-nowrap">
+                        {{ col.header }}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <!-- Table body -->
+            <ng-template pTemplate="body" let-vessel>
+                <tr>
+                    <td *ngFor="let col of orderedSelectedColumns" class="text-nowrap">
+
+                        <!-- Actions column -->
+                        <ng-container *ngIf="col.field === 'actions'; else normalCell">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <!-- Edit button -->
+                                <button class="btn d-flex align-items-center" title="Edit"
+                                    (click)="onEditVessel(vessel)">
+                                    <!-- <i class="pi pi-pencil"></i> -->
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <!--  Delete button -->
+                                <button type="button" title="Delete" class="btn d-flex align-items-center">
+                                    <i class="bi bi-trash3-fill text-danger"></i>
+                                </button>
+
+                            </div>
+                        </ng-container>
+
+                        <!-- Normal cells -->
+                        <ng-template #normalCell>
+                            <ng-container
+                                *ngIf="['BirthDate','PassPortIssueDate','PassportExpireDate','VisaIssueDate','VisaExpiryDate','EmploymentDate','InsuranceDate'].includes(col.field); else defaultText">
+                                {{ vessel[col.field] ? (vessel[col.field] | date:'yyyy-MM-dd') : '—' }}
+                            </ng-container>
+
+                            <ng-template #defaultText>
+                                <!-- No -->
+                                <span *ngIf="col.field === 'no'" class="member-id">{{ vessel[col.field] || '—'
+                                    }}</span>
+
+                                <!-- Email -->
+                                <a *ngIf="col.field === 'email'" href="mailto:{{vessel[col.field]}}" class="email-link">
+                                    {{ vessel[col.field] || '—' }}
+                                </a>
+
+                                <!-- Default text -->
+                                <span *ngIf="col.field !== 'no' && col.field !== 'email'">{{ vessel[col.field] ||
+                                    '—'
+                                    }}</span>
+                            </ng-template>
+                        </ng-template>
+
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
 </div>

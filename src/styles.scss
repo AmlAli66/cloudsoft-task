@@ -6,7 +6,7 @@
   --wave-color: #a7e1f4;
   --wave-color-alt: #0096c7;
 }
-// ***************Loading Page*************** //
+// **********************************Loading Page******************************************* //
 .page-loader {
     position: fixed;
     top: 0;
@@ -66,4 +66,114 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+// *******************************************Table Styles**************************************
+/* ================= Modern Table Wrapper ================= */
+.modern-table-container {
+  margin: 0 auto 1.5rem auto;
+  width: 100%;
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(135deg, #f9f9ff, #f0faff);
+  padding: 0.5rem;
+}
+/* ================= Column-Specific Styles ================= */
+.member-id {
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.email-link {
+  color: #1e88e5;
+  text-decoration: none;
+  cursor: pointer;
+}
+.email-link:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+// /* ============= Caption Section ============= */
+/* Caption Section */
+.caption-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Title */
+.caption-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #374151; 
+  margin: 0;
+}
+
+/* Actions container */
+.caption-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Add button */
+.btn-primary-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #4f46e5; /* Indigo */
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 40px;
+}
+
+.btn-primary-action i {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.btn-primary-action:hover {
+  background-color: #4338ca;  
+}
+
+/* Outline button (Filter) */
+.btn-outline-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 40px;
+}
+
+.btn-outline-action i {
+  font-size: 1.1rem;
+}
+
+.btn-outline-action:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+// **********************************MultiSelect Responsive************************************** //
+@media (max-width: 768px) {
+  p-multiSelect {
+    max-width: 220px;
+  }
 }

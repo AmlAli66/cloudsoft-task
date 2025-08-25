@@ -1,14 +1,5 @@
+/***************** Table custom style********************** */
 /* ================= Modern Table Wrapper ================= */
-.modern-table-container {
-  margin: 0 auto 1.5rem auto;
-  max-width: 96vw;
-  border-radius: 12px;
-  overflow: auto;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  background: linear-gradient(135deg, #f9f9ff, #f0faff);
-  padding: 0.5rem;
-}
-
 /* Table base styles */
 ::ng-deep .modern-table-container .p-datatable {
   border: none !important;
@@ -45,21 +36,7 @@
   vertical-align: middle;
 }
 
-/* ================= Column-Specific Styles ================= */
-.emp-id {
-  color: #1565c0;
-  font-weight: 600;
-}
 
-.email-link {
-  color: #1e88e5;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.email-link:hover {
-  color: #0d47a1;
-  text-decoration: none;
-}
 
 /* ================= Status Badge ================= */
 .status-pill {
@@ -85,51 +62,25 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-/* ============= Caption Section ============= */
-.caption-section {
+
+/***************** multiselect custom style********************** */
+::ng-deep .p-multiselect {
+  height: 40px !important; 
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-.caption-title {
-  font-size: 1.25rem;
-  color: #2f3a4a;
-}
-/* Actions container */
-.caption-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
 }
 
-/* ================= Responsiveness ================= */
-@media (max-width: 768px) {
-  /* Table adjustments */
-  .modern-table-container {
-    font-size: 0.75rem;
-    padding: 0.25rem;
-  }
-  ::ng-deep .modern-table-container .p-datatable-thead > tr > th,
-  ::ng-deep .modern-table-container .p-datatable-tbody > tr > td {
-    padding: 4px 6px !important;
-  }
 
-  /* Caption adjustments */
-  .caption-section {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .caption-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-  .caption-actions button,
-  .caption-actions p-multiSelect {
-    flex: 1 1 auto;
-  }
+::ng-deep .p-multiselect-token {
+  font-size: 0.8rem;
+  background-color: #e0f7fa;
 }
+
+::ng-deep .p-multiselect-token:hover {
+  background-color: #B9E1F9;
+}
+
+
 
 /* ============= Form style ============= */
 

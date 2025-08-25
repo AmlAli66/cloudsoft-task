@@ -2,25 +2,24 @@
 <div *ngIf="loading" class="page-loader">
     <i class="pi pi-spin pi-spinner"></i>
 </div>
-<div class="Seafarers-page-content p-3">
+<div class="Seafarers-page-content">
     <!-- Caption section -->
     <div class="caption-section mb-3">
         <!-- Title -->
-        <h3 class="m-0 fw-bold caption-title">Seafarers Roster</h3>
+        <h3 class="caption-title">Seafarers Roster</h3>
 
         <!-- Actions (buttons + multiSelect) -->
-        <div class="caption-actions d-flex align-items-center gap-2 flex-wrap">
+        <div class="caption-actions">
             <!-- Add Seafarer button -->
-            <button type="button" class="btn btn-primary d-flex align-items-center gap-2" (click)="openSeafarerModal()">
+            <button type="button" class="btn-primary-action" (click)="openSeafarerModal()">
                 <i class="pi pi-plus"></i>
-                Add Seafarer
+                <span>Add Seafarer</span>
             </button>
 
             <!-- Filter toggle button -->
-            <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2"
-                (click)="toggleFilters()">
-                <i class="pi pi-filter"></i>
-                Filter
+            <button type="button" class="btn-outline-action" (click)="toggleFilters()">
+                <i class="bi bi-funnel-fill"></i>
+                <span>Filter</span>
             </button>
 
             <!-- Displayed columns -->
@@ -29,6 +28,7 @@
             </p-multiSelect>
         </div>
     </div>
+
 
     <!-- Filter inputs -->
     <div *ngIf="showFilters" class="d-flex justify-content-start align-items-center gap-3 mb-3 ">
@@ -46,7 +46,7 @@
             <!-- Table header -->
             <ng-template pTemplate="header">
                 <tr>
-                    <th *ngFor="let col of orderedSelectedColumns" [pSortableColumn]="col.field">
+                    <th *ngFor="let col of orderedSelectedColumns" [pSortableColumn]="col.field" class="text-nowrap">
                         {{ col.header }}
                         <p-sortIcon [field]="col.field"></p-sortIcon>
                     </th>
@@ -56,21 +56,13 @@
             <!-- Table body -->
             <ng-template pTemplate="body" let-seafarer>
                 <tr>
-                    <td *ngFor="let col of orderedSelectedColumns">
+                    <td *ngFor="let col of orderedSelectedColumns" class="text-nowrap">
 
                         <!-- Actions column -->
                         <ng-container *ngIf="col.field === 'actions'; else normalCell">
                             <div class="d-flex justify-content-center align-items-center gap-2">
-                                <!-- <span class="status-pill" [ngClass]="seafarer.Status === 1 ? 'active' : 'inactive'">
-                                    {{ seafarer.Status === 1 ? 'Active' : 'Inactive' }}
-                                </span> -->
-
-                                <!-- <button class="btn btn-sm btn-warning d-flex align-items-center"
-                                    (click)="toggleSeafarerStatus(seafarer)" title="Toggle Status">
-                                    <i class="pi" [ngClass]="seafarer.Status === 1 ? 'pi-times' : 'pi-check'"></i>
-                                </button> -->
-                                <!-- زرار Active / Inactive -->
-                                <button type="button" class="btn btn-sm status-pill"
+                                <!--  Active / Inactive button -->
+                                <button title="status" type="button" class="btn btn-sm status-pill"
                                     [ngClass]="seafarer.Status === 1 ? 'btn-success' : 'btn-secondary'"
                                     (click)="toggleSeafarerStatus(seafarer)"
                                     [title]="seafarer.Status === 1 ? 'Active' : 'Inactive'">
@@ -95,7 +87,7 @@
 
                             <ng-template #defaultText>
                                 <!-- EmpId -->
-                                <span *ngIf="col.field === 'EmpId'" class="emp-id">{{ seafarer[col.field] || '—'
+                                <span *ngIf="col.field === 'EmpId'" class="member-id">{{ seafarer[col.field] || '—'
                                     }}</span>
 
                                 <!-- Email -->
